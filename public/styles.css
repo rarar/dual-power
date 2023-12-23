@@ -1,0 +1,52 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* Prevent scrolling */
+    background-color: #f0f0f0; /* Adjust background color as needed */
+    font-family: Arial, sans-serif; /* Use a common font */
+}
+
+.container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.button {
+    font-size: 1.5em; /* Font size */
+    background-color: #007bff; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* Remove borders */
+    cursor: pointer; /* Cursor to pointer to indicate clickable */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.button:hover {
+    background-color: #0056b3; /* Darken button on hover */
+}
+
+/* Styles for larger screens */
+@media (min-width: 601px) {
+    .container {
+        flex-direction: row; /* Side-by-side buttons on larger screens */
+    }
+
+    .button {
+        width: 50%; /* Each button takes half the width */
+        height: 100%; /* Full height */
+    }
+
+}
+
+/* Styles for smaller screens (mobile devices) */
+@media (max-width: 600px) {
+    .container {
+        flex-direction: column; /* Stack buttons vertically on mobile */
+    }
+
+    .button {
+        width: 100%; /* Full width on mobile */
+        height: 50%; /* Each button takes half the height */
+    }
+}

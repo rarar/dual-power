@@ -1,70 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dual Power</title>
-  <style>
-    body,
-    html {
-      height: 100%;
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #333;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      overflow: hidden;
-    }
-
-    .container {
-      display: flex;
-      justify-content: space-between;
-      align-items: stretch;
-      height: 100vh;
-      /* Full viewport height */
-      width: 100vw;
-      /* Full viewport width */
-    }
-
-    .button {
-      flex: 1;
-      /* Distribute space evenly */
-      font-size: 4vw;
-      /* Responsive font size */
-      padding: 20px;
-      cursor: pointer;
-      border: none;
-      background: none;
-      outline: none;
-      color: white;
-      transition: background-color 0.3s, color 0.3s;
-    }
-
-    .button:hover {
-      background-color: #555;
-    }
-
-    .button:active {
-      color: #000;
-    }
-
-    @media (orientation: portrait) {
-      .button {
-        font-size: 6vw;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual Power</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
 </head>
-
 <body>
-  <div class="container">
-    <button class="button" id="option1-btn"></button>
-    <button class="button" id="option2-btn"></button>
-  </div>
+    <div class="container">
+        <button class="button" id="option1-btn">Option 1</button>
+        <button class="button" id="option2-btn">Option 2</button>
+    </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
