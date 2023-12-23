@@ -54,8 +54,26 @@
   <button class="button" id="people-btn">THE PEOPLE</button>
   <button class="button" id="state-btn">THE STATE</button>
 </div>
+<script src="/socket.io/socket.io.js"></script>
 <script>
-  // JavaScript will go here to handle the button clicks
+        const socket = io();
+
+// Handle button clicks
+document.getElementById('people-btn').addEventListener('click', () => {
+    socket.emit('vote', { choice: 'left' }); // Assuming 'left' corresponds to 'THE PEOPLE'
+});
+
+document.getElementById('state-btn').addEventListener('click', () => {
+    socket.emit('vote', { choice: 'right' }); // Assuming 'right' corresponds to 'THE STATE'
+});
+
+// Handle updates from the server
+socket.on('update', (ratios) => {
+    console.log('Updated Ratios:', ratios);
+    // Here you can update the UI based on the ratios
+    // For example, adjust the brightness of the bulbs
+});
+
 </script>
 </body>
 </html>
