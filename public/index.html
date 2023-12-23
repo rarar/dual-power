@@ -1,79 +1,93 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dual Power</title>
-<style>
-  body, html {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #333;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    overflow: hidden;
-  }
-  .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    height: 100vh; /* Full viewport height */
-    width: 100vw; /* Full viewport width */
-  }
-  .button {
-    flex: 1; /* Distribute space evenly */
-    font-size: 4vw; /* Responsive font size */
-    padding: 20px;
-    cursor: pointer;
-    border: none;
-    background: none;
-    outline: none;
-    color: white;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  .button:hover {
-    background-color: #555;
-  }
-  .button:active {
-    color: #000;
-  }
-  @media (orientation: portrait) {
-    .button {
-      font-size: 6vw;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dual Power</title>
+  <style>
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #333;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
     }
-  }
-</style>
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: stretch;
+      height: 100vh;
+      /* Full viewport height */
+      width: 100vw;
+      /* Full viewport width */
+    }
+
+    .button {
+      flex: 1;
+      /* Distribute space evenly */
+      font-size: 4vw;
+      /* Responsive font size */
+      padding: 20px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      outline: none;
+      color: white;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .button:hover {
+      background-color: #555;
+    }
+
+    .button:active {
+      color: #000;
+    }
+
+    @media (orientation: portrait) {
+      .button {
+        font-size: 6vw;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="container">
-  <button class="button" id="people-btn">THE PEOPLE</button>
-  <button class="button" id="state-btn">THE STATE</button>
-</div>
-<script src="/socket.io/socket.io.js"></script>
-<script>
-        const socket = io();
+  <div class="container">
+    <button class="button" id="option1-btn"></button>
+    <button class="button" id="option2-btn"></button>
+  </div>
 
-// Handle button clicks
-document.getElementById('people-btn').addEventListener('click', () => {
-    socket.emit('vote', { choice: 'left' }); // Assuming 'left' corresponds to 'THE PEOPLE'
-});
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const option1Btn = document.getElementById('option1-btn');
+    const option2Btn = document.getElementById('option2-btn');
 
-document.getElementById('state-btn').addEventListener('click', () => {
-    socket.emit('vote', { choice: 'right' }); // Assuming 'right' corresponds to 'THE STATE'
-});
+    // Handle button clicks
+    // Example for one button
+    option1Btn.addEventListener('click', () => {
+      socket.emit('vote', { choice: 'left', optionText: option1Btn.textContent });
+    });
 
-// Handle updates from the server
-socket.on('update', (ratios) => {
-    console.log('Updated Ratios:', ratios);
-    // Here you can update the UI based on the ratios
-    // For example, adjust the brightness of the bulbs
-});
+    option2Btn.addEventListener('click', () => {
+      socket.emit('vote', { choice: 'right', optionText: option2Btn.textContent });
+    });
 
-</script>
+    // Handle updates for new options from the server
+    socket.on('update-options', (newOptions) => {
+      option1Btn.textContent = newOptions[0];
+      option2Btn.textContent = newOptions[1];
+    });
+  </script>
 </body>
+
 </html>
