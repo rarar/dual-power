@@ -31,16 +31,31 @@ process.on('SIGINT', () => {
 // Options list
 const optionsString = process.env.OPTIONS_LIST;
 const optionsList = optionsString.split(';').map(pair => pair.split(','));
-let currentOptionIndex = 0;
 
-function getNextOptions() {
-  const options = optionsList[currentOptionIndex];
-  currentOptionIndex = (currentOptionIndex + 1) % optionsList.length;
+// Shuffle algorithm
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+  }
+}
+
+const userStates = {};
+
+function getNextOptions(userState) {
+  const options = userState.shuffledOptions[userState.currentIndex];
+  userState.currentIndex++;
+
+  // Reshuffle and reset index if at the end
+  if (userState.currentIndex >= userState.shuffledOptions.length) {
+    shuffleArray(userState.shuffledOptions);
+    userState.currentIndex = 0;
+  }
+
   return options;
 }
 
-// Function to add a new option
-function addOption(text, bulb) {
+function addOption(text, bulb, callback) {
   const stmt = db.prepare('INSERT INTO options (text, bulb, votes) VALUES (?, ?, 0)');
   stmt.run(text, bulb, function (err) {
     if (err) {
@@ -48,12 +63,12 @@ function addOption(text, bulb) {
     } else {
       console.log(`A new option row has been inserted with rowid ${this.lastID}`);
     }
+    stmt.finalize();
+    callback();
   });
-  stmt.finalize();
 }
 
-
-function voteOption(optionText, bulb, callback) {
+function voteOption(optionText, bulb, socket, userState) {
   db.get('SELECT id FROM options WHERE text = ?', [optionText], (err, row) => {
     if (err) {
       console.error('Error in checking option existence:', err.message);
@@ -65,57 +80,61 @@ function voteOption(optionText, bulb, callback) {
         if (err) {
           console.error('Error in updating votes:', err.message);
         } else {
-          console.log(`Vote count updated for option ID ${row.id}`);
+          console.log(`Vote updated for '${optionText}' (ID: ${row.id}). Total votes: ${this.changes}`);
         }
-        callback();
+        getVoteRatios(socket);
+        socket.emit('update-options', getNextOptions(userState));
       });
     } else {
-      addOption(optionText, bulb);
-      callback();
+      addOption(optionText, bulb, () => getVoteRatios(socket));
     }
   });
 }
 
-
-// Function to get the current vote ratios
-function getVoteRatios(callback) {
+function getVoteRatios(socket) {
   db.all('SELECT bulb, SUM(votes) as totalVotes FROM options GROUP BY bulb', [], (err, rows) => {
     if (err) {
       console.error('Error in getting vote ratios:', err.message);
-      throw err;
+      return;
     }
     console.log('Current vote ratios:', rows);
-    callback(rows);
   });
 }
 
-
+// Socket setup & pass server
 // Socket setup & pass server
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  // Send the current options and vote ratios to the client
+  // Initialize user state for each new connection
+  userStates[socket.id] = {
+    shuffledOptions: [...optionsList],
+    currentIndex: 0
+  };
+  shuffleArray(userStates[socket.id].shuffledOptions);
+
+  // Send the initial options and vote ratios to the client
   getVoteRatios((ratios) => {
     socket.emit('update', ratios);
-    socket.emit('update-options', getNextOptions());
+    socket.emit('update-options', getNextOptions(userStates[socket.id]));
   });
 
   socket.on('vote', (data) => {
+    const userState = userStates[socket.id];
     const bulb = data.choice;
     const optionText = data.optionText;
 
-    voteOption(optionText, bulb, () => {
-      getVoteRatios((ratios) => {
-        io.emit('update', ratios);
-        io.emit('update-options', getNextOptions());
-      });
-    });
+    // Process vote and send updates specific to the user who voted
+    voteOption(optionText, bulb, socket, userState);
   });
 
   socket.on('disconnect', () => {
+    // Clean up user state when they disconnect
+    delete userStates[socket.id];
     console.log('User disconnected');
   });
 });
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;
