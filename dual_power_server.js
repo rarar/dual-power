@@ -28,35 +28,30 @@ process.on('SIGINT', () => {
   process.exit();
 });
 
-// Hardcoded options list
-const optionsList = [
-  ["THE PEOPLE", "THE STATE"],
-  ["DEMOCRACY", "TECHNOCRACY"],
-  ["DECENTRALIZED", "CENTRALIZED"],
-  ["AUTONOMIST", "MARXIST-LENINIST"]
-];
+// Options list
+const optionsString = process.env.OPTIONS_LIST;
+const optionsList = optionsString.split(';').map(pair => pair.split(','));
 let currentOptionIndex = 0;
 
 function getNextOptions() {
   const options = optionsList[currentOptionIndex];
   currentOptionIndex = (currentOptionIndex + 1) % optionsList.length;
-  console.log(currentOptionIndex);
-  console.log(options);
   return options;
 }
 
 // Function to add a new option
 function addOption(text, bulb) {
-  console.log("addOption");
   const stmt = db.prepare('INSERT INTO options (text, bulb, votes) VALUES (?, ?, 0)');
   stmt.run(text, bulb, function (err) {
     if (err) {
-      return console.log(err.message);
+      console.error('Error in inserting new option:', err.message);
+    } else {
+      console.log(`A new option row has been inserted with rowid ${this.lastID}`);
     }
-    console.log(`A new row has been inserted with rowid ${this.lastID}`);
   });
   stmt.finalize();
 }
+
 
 function voteOption(optionText, bulb, callback) {
   db.get('SELECT id FROM options WHERE text = ?', [optionText], (err, row) => {
@@ -69,16 +64,14 @@ function voteOption(optionText, bulb, callback) {
       db.run('UPDATE options SET votes = votes + 1 WHERE id = ?', [row.id], function (err) {
         if (err) {
           console.error('Error in updating votes:', err.message);
+        } else {
+          console.log(`Vote count updated for option ID ${row.id}`);
         }
         callback();
       });
     } else {
-      db.run('INSERT INTO options (text, bulb, votes) VALUES (?, ?, 1)', [optionText, bulb], function (err) {
-        if (err) {
-          console.error('Error in inserting new option:', err.message);
-        }
-        callback();
-      });
+      addOption(optionText, bulb);
+      callback();
     }
   });
 }
@@ -88,12 +81,14 @@ function voteOption(optionText, bulb, callback) {
 function getVoteRatios(callback) {
   db.all('SELECT bulb, SUM(votes) as totalVotes FROM options GROUP BY bulb', [], (err, rows) => {
     if (err) {
+      console.error('Error in getting vote ratios:', err.message);
       throw err;
     }
-    console.log(rows);
+    console.log('Current vote ratios:', rows);
     callback(rows);
   });
 }
+
 
 // Socket setup & pass server
 io.on('connection', (socket) => {
