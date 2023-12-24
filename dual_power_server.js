@@ -114,6 +114,8 @@ io.on('connection', (socket) => {
   shuffleArray(userStates[socket.id].shuffledOptions);
 
   // Send the initial options and vote ratios to the client
+  socket.emit('update-options', getNextOptions(userStates[socket.id]));
+  
   getVoteRatios((ratios) => {
     socket.emit('update', ratios);
     socket.emit('update-options', getNextOptions(userStates[socket.id]));

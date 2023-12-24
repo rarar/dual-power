@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dual Power</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dual Power</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
 </head>
+
 <body>
-    <div class="container">
-        <button class="button" id="option1-btn"></button>
-        <button class="button" id="option2-btn"></button>
-    </div>
+  <div class="container">
+    <button class="button" id="option1-btn"></button>
+    <button class="button" id="option2-btn"></button>
+  </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
@@ -30,9 +32,21 @@
 
     // Handle updates for new options from the server
     socket.on('update-options', (newOptions) => {
-      option1Btn.textContent = newOptions[0];
-      option2Btn.textContent = newOptions[1];
+      if (Math.random() > 0.5) {
+        displayOptions(newOptions[1], newOptions[0], 'right', 'left');
+      } else {
+        displayOptions(newOptions[0], newOptions[1], 'left', 'right');
+      }
     });
+
+    function displayOptions(option1, option2, option1Bulb, option2Bulb) {
+      option1Btn.textContent = option1;
+      option2Btn.textContent = option2;
+      currentOptions = {
+        option1Bulb: option1Bulb,
+        option2Bulb: option2Bulb
+      };
+    }
   </script>
 </body>
 
