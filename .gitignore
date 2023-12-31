@@ -2,10 +2,10 @@
 node_modules/
 
 # Environment configuration
-.env
+# .env
 
 # Database
-votes.db
+# votes.db
 
 # Logs
 logs/
