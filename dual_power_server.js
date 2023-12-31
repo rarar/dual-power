@@ -4,6 +4,7 @@ const http = require('http');
 const socketIO = require('socket.io');
 const sqlite3 = require('sqlite3').verbose();
 
+
 // App setup
 const app = express();
 const server = http.createServer(app);
@@ -101,7 +102,18 @@ function getVoteRatios(socket) {
   });
 }
 
-// Socket setup & pass server
+
+app.get('/get-latest-data', (req, res) => {
+  db.all('SELECT bulb, SUM(votes) as totalVotes FROM options GROUP BY bulb', [], (err, rows) => {
+      if (err) {
+          res.status(500).send('Error fetching data');
+          return;
+      }
+      res.json(rows);
+  });
+});
+
+
 // Socket setup & pass server
 io.on('connection', (socket) => {
   console.log('A user connected');
@@ -115,7 +127,7 @@ io.on('connection', (socket) => {
 
   // Send the initial options and vote ratios to the client
   socket.emit('update-options', getNextOptions(userStates[socket.id]));
-  
+
   getVoteRatios((ratios) => {
     socket.emit('update', ratios);
     socket.emit('update-options', getNextOptions(userStates[socket.id]));
