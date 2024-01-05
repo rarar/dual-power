@@ -1,29 +1,73 @@
+@font-face {
+    font-family: 'supply';
+    src: url('/fonts/PPSupplyMono-Ultralight.woff2') format('woff2'),
+    font-weight: normal;
+    font-style: normal;
+}
+
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden; /* Prevent scrolling */
-    background-color: #f0f0f0; /* Adjust background color as needed */
-    font-family: Arial, sans-serif; /* Use a common font */
+    overflow: hidden;
+    background-color: #f0f0f0;
+    font-family: 'supply', monospace; /* Use your custom font */
+    letter-spacing: 0.1rem;
+}
+
+.header {
+    position: fixed; /* Fixed positioning */
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px; /* Adjust padding as needed */
+    box-sizing: border-box; /* Include padding in the width */
+    z-index: 1000; /* Ensure it sits above other content */
+}
+
+.header-link {
+    text-decoration: none;
+    color: #0A0A0A;
+    font-size: 1em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#about-link {
+    color: #F0ECDD;
 }
 
 .container {
     display: flex;
+    flex-direction: row;
     height: 100%;
     width: 100%;
 }
 
 .button {
     font-size: 1.5em; /* Font size */
-    background-color: #007bff; /* Button background color */
-    color: white; /* Button text color */
+    background-color: #FAF8F0; /* Button background color */
+    color: #0A0A0A; /* Button text color */
     border: none; /* Remove borders */
     cursor: pointer; /* Cursor to pointer to indicate clickable */
     transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    font-family: 'supply', monospace; /* Use your custom font */
+    letter-spacing: 0.1rem;
 }
 
 .button:hover {
-    background-color: #0056b3; /* Darken button on hover */
+    background-color: #F0ECDD; /* Darken button on hover */
+}
+
+#option2-btn {
+    background-color: #0A0A0A;
+    color: #FAF8F0
+}
+
+#option2-btn:hover {
+    background-color: #141414;
 }
 
 /* Styles for larger screens */
