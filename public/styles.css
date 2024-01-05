@@ -11,7 +11,7 @@ html, body {
     height: 100%;
     overflow: hidden;
     background-color: #f0f0f0;
-    font-family: 'supply', monospace; /* Use your custom font */
+    font-family: 'supply', monospace; 
     letter-spacing: 0.1rem;
 }
 
@@ -22,9 +22,9 @@ html, body {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    padding: 20px; /* Adjust padding as needed */
-    box-sizing: border-box; /* Include padding in the width */
-    z-index: 1000; /* Ensure it sits above other content */
+    padding: 20px;
+    box-sizing: border-box; 
+    z-index: 1000; 
 }
 
 .header-link {
@@ -47,18 +47,18 @@ html, body {
 }
 
 .button {
-    font-size: 1.5em; /* Font size */
-    background-color: #FAF8F0; /* Button background color */
-    color: #0A0A0A; /* Button text color */
-    border: none; /* Remove borders */
-    cursor: pointer; /* Cursor to pointer to indicate clickable */
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-    font-family: 'supply', monospace; /* Use your custom font */
+    font-size: 1.5em;
+    background-color: #FAF8F0; 
+    color: #0A0A0A; 
+    border: none; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease; 
+    font-family: 'supply', monospace; 
     letter-spacing: 0.1rem;
 }
 
 .button:hover {
-    background-color: #F0ECDD; /* Darken button on hover */
+    background-color: #F0ECDD; 
 }
 
 #option2-btn {
