@@ -93,4 +93,8 @@ html, body {
         width: 100%; /* Full width on mobile */
         height: 50%; /* Each button takes half the height */
     }
+
+    #about-link {
+        color: #0A0A0A;
+    }
 }
