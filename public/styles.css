@@ -15,6 +15,10 @@ html, body {
     letter-spacing: 0.1rem;
 }
 
+body.about {
+    overflow: auto;
+}
+
 .header {
     position: fixed; /* Fixed positioning */
     top: 0;
@@ -44,6 +48,26 @@ html, body {
     flex-direction: row;
     height: 100%;
     width: 100%;
+}
+
+
+main {
+    width: 50%;
+    margin: 10% auto;
+    line-height: 1.5rem;
+}
+
+main a {
+    color: #0A0A0A;
+    text-decoration: underline;
+}
+
+main a:hover {
+    opacity: 50%;
+}
+
+main ol li {
+    margin: 1rem auto;
 }
 
 .button {
@@ -96,5 +120,11 @@ html, body {
 
     #about-link {
         color: #0A0A0A;
+    }
+
+    main {
+        width: 90%;
+        margin: 20% auto;
+        line-height: 1.5rem;
     }
 }

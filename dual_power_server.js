@@ -113,6 +113,11 @@ app.get('/get-latest-data', (req, res) => {
   });
 });
 
+app.get('/about', (req, res) => {
+  res.sendFile(__dirname + '/public/about.html');
+});
+
+
 
 // Socket setup & pass server
 io.on('connection', (socket) => {
